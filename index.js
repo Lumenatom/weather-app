@@ -6,18 +6,34 @@ city = document.querySelector(".city"),
     input = document.querySelector(".input"),
     button = document.querySelector(".button")
 
+function reload() {
+    window.location.reload()
+}
 function outData(location = "kiev") {
     fetch(`http://api.openweathermap.org/data/2.5/weather?q=${location}&APPID=bae9424fb8ffb0e7dd89e8edfa31730f`)
         .then(response => response.json())
         .then((data) => {
             console.log(data);
             city.innerHTML = data.name;
-            temperature.innerHTML = Math.floor(data.main.temp - 273) + "°C";
+            try {
+                temperature.innerHTML = Math.floor(data.main.temp - 273) + "°C";
+            }
+            catch {
+                city.style.padding = 10 + "px"
+                city.innerHTML = "Not found"
+                temperature.style.display = "none"
+                icon.style.display = "none"
+                tempMinMax.style.display = "none"
+                setTimeout(reload, 3000)
+            }
             // description.innerHTML = data.weather[0].main;
             icon.innerHTML = `<img src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png">`;
             tempMinMax.innerHTML = `min:${Math.floor(data.main.temp_min - 273)}°C - max:${Math.floor(data.main.temp_max - 273)}°C`;
         })
 }
+
+
+
 
 button.addEventListener("click", search);
 input.addEventListener("keyup", (e) => {
